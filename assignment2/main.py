@@ -1,8 +1,25 @@
+import json
+from pathlib import Path
+
 phonebook = dict()
+phonebook_file = Path(__file__).parent / "phonebook.json"
+
+
+def write_phonebook_to_file():
+    if phonebook_file.exists():
+        phonebook_file.write_text(json.dumps(phonebook))
+#end def
+
+
+def read_phonebook_from_file():
+    if phonebook_file.exists():
+        return json.loads(phonebook_file.read_text())
+#end def
 
 
 def add_contact(name, phone):
     phonebook[name] = phone
+    write_phonebook_to_file()
     return "Contact added"
 # end def
 
@@ -13,6 +30,7 @@ def change_contact(name, phone):
     # end if
 
     phonebook[name] = phone
+    write_phonebook_to_file()
     return "Contact changed"
 # end def
 
@@ -35,7 +53,7 @@ def show_all():
 # end def
 
 
-def phone_entered(phone):
+def is_phone_entered(phone):
     if len(phone) == 0:
         print("Phone number empty, try again")
         return False
@@ -45,6 +63,8 @@ def phone_entered(phone):
 
 
 def run_code():
+    global phonebook
+    phonebook = read_phonebook_from_file()
     print("Welcome! What can I do for you?")
     while True:
         user_input = input(">>> ")
@@ -64,7 +84,7 @@ def run_code():
             # end if
 
             name, *phone = data
-            if phone_entered(phone):
+            if is_phone_entered(phone):
                 print(add_contact(name, phone[0]))
         elif command in ["edit", "change", "modify"]:
             if len(data) == 0:
@@ -73,7 +93,7 @@ def run_code():
             # end if
 
             name, *phone = data
-            if phone_entered(phone):
+            if is_phone_entered(phone):
                 print(change_contact(name, phone[0]))
             # end if
         elif command in ["phone", "show"]:
