@@ -18,7 +18,7 @@ NUMBER_GENERATED_OF_USERS = 300
 SKIP_EMPTY_DAYS = False
 
 
-def populate_users(amount = NUMBER_GENERATED_OF_USERS):
+def populate_users(amount=NUMBER_GENERATED_OF_USERS):
     users = list()
     if (users_file.exists()):
         users = [{
@@ -90,7 +90,7 @@ def next_seven_workdays():
 
 def print_upcoming_birthdays(next_birthdays):
     print("Upcoming birtdays:")
-    
+
     for next_workday in next_seven_workdays():
         output_string = f"{next_workday}: "
 
@@ -102,7 +102,9 @@ def print_upcoming_birthdays(next_birthdays):
             # end if
         else:
             cur = datetime.now().date()
-            output_string += ", ".join([f"{user['name']} ({cur.year - user['birthday'].year})" for user in next_birthdays[next_workday]])
+            output_string += ", ".join(
+                [f"{user['name']} ({cur.year - user['birthday'].year})" for user in next_birthdays[next_workday]]
+            )
         # end if
 
         print(output_string)
@@ -119,7 +121,7 @@ def run_code():
     next_birthdays = get_next_birthdays(users)
 
     # print (sorted by date from today) a list of upcoming birthdays.
-    print_upcoming_birthdays()
+    print_upcoming_birthdays(next_birthdays)
 # end def
 
 
