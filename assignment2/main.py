@@ -84,6 +84,16 @@ def run_code():
             # end if
         elif command in ["all", "list"]:
             print(show_all())
+        elif command in ["help"]:
+            print('''
+hi/hello - Вітаємось з чат-ботом
+help - Виводить перелік команд
+add/new <name> <phone> - Додати до телефонної книжки запис
+change/edit/modify <name> <new phone> - Змінити телефон запис в телефонній книжці
+phone/show <name> - Показати телефон контакта
+all/list - Показати всі контакти
+close/quit/exit/bye - Завершити роботу
+''')
         elif command in ['close', 'quit', 'exit', 'bye']:
             print("Good bye!")
             break
