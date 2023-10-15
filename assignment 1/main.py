@@ -14,19 +14,22 @@ weekday_name = {
     5: "Friday"
 }
 
+NUMBER_GENERATED_OF_USERS = 300
 
-def populate_users(amount=300):
+
+def populate_users(amount = NUMBER_GENERATED_OF_USERS):
     users = list()
     if (users_file.exists()):
-        for user in json.loads(users_file.read_text())[:amount]:
-            user['birthday'] = datetime.strptime(user['birthday'], '%d-%m-%Y')
-            users.append(user)
+        users = [{
+            "name": user['name'],
+            "birthday": datetime.strptime(user['birthday'], '%d-%m-%Y').date()
+        } for user in json.loads(users_file.read_text())[:amount]]
     else:
-        for i in range(amount):
-            user = get_mocked_user()
-            user['birthday'] = datetime.strftime(user['birthday'], '%d-%m-%Y')
-            users.append(user)
-        # end for
+        users = [get_mocked_user() for _ in range(amount)]
+        users_file.write_text(json.dumps([{
+            "name": user['name'],
+            "birthday": datetime.strftime(user['birthday'], '%d-%m-%Y')
+        } for user in users]))
     # end if
     return users
 # end def
@@ -38,12 +41,14 @@ def get_next_birthdays(users):
 
     next_birthdays = defaultdict(list)
     for user in users:
-        birthday = user['birthday'].date()
+        birthday = user['birthday']
+
+        # can not do birthday.replace(year=current_date.year) because 
+        # if birthday is on feb 29 in a leap year and now is not a leap year, 
+        # it will throw an error "ValueError: day is out of range for month"
 
         month = birthday.month
         day = birthday.day
-
-        # can not do birthday.replace(year=current_date.year) because if bday is on feb 29 in a leap year and now is not a leap year, it will throw an error "ValueError: day is out of range for month"
         if (month == 2 and day == 29 and not is_leap):
             day = 28
         # end if
@@ -73,13 +78,17 @@ def next_seven_workdays():
         cur_day = int(cur.strftime('%w')) + i
         if cur_day > 6:
             cur_day -= 7
+        # end if
         if cur_day != 0 and cur_day != 6:
             next_days.append(weekday_name[cur_day])
+        # end if
+    # end for
     return next_days
+# end def
 
 
 if __name__ == "__main__":
-    # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = 300)
+    # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = NUMBER_GENERATED_OF_USERS)
     users = populate_users()
 
     # get list of birthdays within the next 7 days
@@ -98,15 +107,14 @@ if __name__ == "__main__":
                 output_string = None
             else:
                 output_string += "- - -"
+            # end if
         else:
             cur = datetime.now().date()
-            bday_people = list()
-            for user in next_birthdays[next_workday]:
-                name = user['name']
-                bday = user['birthday'].date()
-                age = (cur.year - bday.year)
-                bday_people.append(f"{name} ({age})")
-            output_string += ", ".join(bday_people)
+            output_string += ", ".join([f"{user['name']} ({cur.year - user['birthday'].year})" for user in next_birthdays[next_workday]])
+        # end if
 
         if output_string:
             print(output_string)
+        # end if
+    # end for
+# end if
