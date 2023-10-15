@@ -15,7 +15,7 @@ weekday_name = {
 }
 
 
-def populate_users(amount=200):
+def populate_users(amount=300):
     users = list()
     if (users_file.exists()):
         for user in json.loads(users_file.read_text())[:amount]:
@@ -79,7 +79,7 @@ def next_seven_workdays():
 
 
 if __name__ == "__main__":
-    # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = 200)
+    # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = 300)
     users = populate_users()
 
     # get list of birthdays within the next 7 days
