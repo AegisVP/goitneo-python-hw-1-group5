@@ -1,10 +1,9 @@
-import json
-import sys
 import calendar
+import json
 from collections import defaultdict
 from datetime import datetime, timedelta
-from pathlib import Path
 from mock import get_mocked_user
+from pathlib import Path
 
 users_file = Path(__file__).parent / "data.json"
 weekday_name = {
