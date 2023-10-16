@@ -1,8 +1,8 @@
 import calendar
 import json
+from faker import Faker
 from collections import defaultdict
 from datetime import datetime
-from mock import get_mocked_user
 from pathlib import Path
 
 users_file = Path(__file__).parent / "data.json"
@@ -14,11 +14,20 @@ weekday_name = {
     5: "Friday"
 }
 
-NUMBER_GENERATED_OF_USERS = 300
-SKIP_EMPTY_DAYS = False
+NUMBER_OF_GENERATED_USERS = 300
+PRINT_EMPTY_DAYS = True
+SHOW_AGE = True
 
 
-def populate_users(amount=NUMBER_GENERATED_OF_USERS):
+def get_mocked_user():
+    # fake = Faker()
+    return {
+        "name": Faker().name(),
+        "birthday": Faker().date_of_birth()
+    }
+
+
+def populate_users(amount=NUMBER_OF_GENERATED_USERS):
     users = list()
     if (users_file.exists()):
         users = [{
@@ -45,9 +54,8 @@ def get_next_birthdays(users):
         birthday = user['birthday']
 
         # can not do birthday.replace(year=current_date.year) because
-        # if birthday is on feb 29 in a leap year and now is not a leap year,
+        # if birthday is on feb 29 on a leap year and now is not a leap year,
         # it will throw an error "ValueError: day is out of range for month"
-
         month = birthday.month
         day = birthday.day
         if (month == 2 and day == 29 and not is_leap):
@@ -65,17 +73,18 @@ def get_next_birthdays(users):
             if weekday == 0 or weekday == 6:
                 weekday = 1
             # end if
+            user['age_str'] = f" ({(current_date.year - birthday.year)})" if SHOW_AGE else ""
             next_birthdays[weekday_name[weekday]].append(user)
         # end if
     # end for
     return next_birthdays
 # end def
 
-
+# Get a sorted list of next working days for next 7 calendar days
 def next_seven_workdays():
     cur = datetime.now().date()
     next_days = list()
-    for i in range(6):
+    for i in range(6+1):
         cur_day = int(cur.strftime('%w')) + i
         if cur_day > 6:
             cur_day -= 7
@@ -95,15 +104,15 @@ def print_upcoming_birthdays(next_birthdays):
         output_string = f"{next_workday}: "
 
         if len(next_birthdays[next_workday]) == 0:
-            if SKIP_EMPTY_DAYS:
+            if not PRINT_EMPTY_DAYS:
                 continue
-            else:
-                output_string += "- - -"
+            
+            output_string += "- - -"
             # end if
         else:
             cur = datetime.now().date()
             output_string += ", ".join(
-                [f"{user['name']} ({cur.year - user['birthday'].year})" for user in next_birthdays[next_workday]]
+                [f"{user['name']}{user['age_str']}" for user in next_birthdays[next_workday]]
             )
         # end if
 
@@ -114,7 +123,7 @@ def print_upcoming_birthdays(next_birthdays):
 
 
 def run_code():
-    # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = NUMBER_GENERATED_OF_USERS)
+    # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = NUMBER_OF_GENERATED_USERS)
     users = populate_users()
 
     # get list of birthdays within the next 7 days
