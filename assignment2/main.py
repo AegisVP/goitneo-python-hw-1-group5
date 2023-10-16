@@ -4,6 +4,15 @@ from pathlib import Path
 phonebook = dict()
 phonebook_file = Path(__file__).parent / "phonebook.json"
 SAVE_TO_FILE = False
+help_text='''
+hi/hello - Вітаємось з чат-ботом
+help - Виводить перелік команд
+add/new <name> <phone> - Додати до телефонної книжки запис
+change/edit/modify <name> <new phone> - Змінити телефон запис в телефонній книжці
+phone/show <name> - Показати телефон контакта
+all/list - Показати всі контакти
+close/quit/exit/bye - Завершити роботу
+'''
 
 
 def write_phonebook_to_file():
@@ -107,15 +116,7 @@ def run_bot():
         elif command in ["all", "list"]:
             print(show_all())
         elif command in ["help"]:
-            print('''
-hi/hello - Вітаємось з чат-ботом
-help - Виводить перелік команд
-add/new <name> <phone> - Додати до телефонної книжки запис
-change/edit/modify <name> <new phone> - Змінити телефон запис в телефонній книжці
-phone/show <name> - Показати телефон контакта
-all/list - Показати всі контакти
-close/quit/exit/bye - Завершити роботу
-''')
+            print(help_text)
         elif command in ['close', 'quit', 'exit', 'bye']:
             print("Good bye!")
             break
