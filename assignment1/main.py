@@ -135,7 +135,7 @@ def print_upcoming_birthdays(next_birthdays):
 # end def
 
 
-def run_code():
+def get_birthdays_per_week():
     # get list of users. Can pass an int as parameter to generate the specified number of users if not data.json is present (default = NUMBER_OF_GENERATED_USERS)
     users = populate_users()
 
@@ -148,5 +148,5 @@ def run_code():
 
 
 if __name__ == "__main__":
-    run_code()
+    get_birthdays_per_week()
 # end if

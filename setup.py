@@ -17,7 +17,7 @@ setup(name='goitneo-python-hw-1-group5',
       package_data={"":["*.json"]},
       include_package_data=False,
       entry_points={'console_scripts': [
-          'run_work1 = assignment1.main:run_code',
-          'run_work2 = assignment2.main:run_code'
+          'get_birthdays_per_week = assignment1.main:get_birthdays_per_week',
+          'run_bot = assignment2.main:run_bot'
       ]}
 )

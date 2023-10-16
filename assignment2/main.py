@@ -62,7 +62,7 @@ def is_phone_entered(phone):
 # end def
 
 
-def run_code():
+def run_bot():
     global phonebook
     phonebook = read_phonebook_from_file()
     print("Welcome! What can I do for you?")
@@ -125,5 +125,5 @@ close/quit/exit/bye - Завершити роботу
 
 
 if __name__ == "__main__":
-    run_code()
+    run_bot()
 # end if
