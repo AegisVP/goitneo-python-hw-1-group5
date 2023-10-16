@@ -5,7 +5,7 @@ from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
-users_file = Path(__file__).parent / "data.json"
+# Names of weekdays
 weekday_name = {
     1: "Monday",
     2: "Tuesday",
@@ -14,9 +14,20 @@ weekday_name = {
     5: "Friday"
 }
 
+# File for storage of users data
+USERS_FILE = Path(__file__).parent / "data.json"
+
+# If USERS_FILE is not present, do you want to save mock data to file?
+SAVE_DATA_TO_FILE = True
+
+# If USERS_FILE is not present, number of generated mock users
 NUMBER_OF_GENERATED_USERS = 300
-PRINT_EMPTY_DAYS = True
-SHOW_AGE = True
+
+# If no birthday is on said day, should the day be printed in the report?
+PRINT_EMPTY_DAYS = False
+
+# Do you want to show turning age of the person?
+SHOW_AGE = False
 
 
 def get_mocked_user():
@@ -29,17 +40,18 @@ def get_mocked_user():
 
 def populate_users(amount=NUMBER_OF_GENERATED_USERS):
     users = list()
-    if (users_file.exists()):
+    if (USERS_FILE.exists()):
         users = [{
             "name": user['name'],
             "birthday": datetime.strptime(user['birthday'], '%d-%m-%Y').date()
-        } for user in json.loads(users_file.read_text())[:amount]]
+        } for user in json.loads(USERS_FILE.read_text())[:amount]]
     else:
         users = [get_mocked_user() for _ in range(amount)]
-        users_file.write_text(json.dumps([{
-            "name": user['name'],
-            "birthday": datetime.strftime(user['birthday'], '%d-%m-%Y')
-        } for user in users]))
+        if SAVE_DATA_TO_FILE:
+            USERS_FILE.write_text(json.dumps([{
+                "name": user['name'],
+                "birthday": datetime.strftime(user['birthday'], '%d-%m-%Y')
+            } for user in users]))
     # end if
     return users
 # end def
@@ -98,6 +110,7 @@ def next_seven_workdays():
 
 
 def print_upcoming_birthdays(next_birthdays):
+    print("")
     print("Upcoming birtdays:")
 
     for next_workday in next_seven_workdays():
