@@ -120,7 +120,7 @@ close/quit/exit/bye - Завершити роботу
             print("Good bye!")
             break
         else:
-            print("I didn't understand you. Try asking something else (Invalid command)")
+            print("I didn't understand you. Try asking something else or typing 'help' (Invalid command)")
         # end if
     # end while
 # end def
