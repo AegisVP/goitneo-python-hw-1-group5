@@ -3,10 +3,11 @@ from pathlib import Path
 
 phonebook = dict()
 phonebook_file = Path(__file__).parent / "phonebook.json"
+SAVE_TO_FILE = False
 
 
 def write_phonebook_to_file():
-    if phonebook_file.exists():
+    if SAVE_TO_FILE and phonebook_file.exists():
         phonebook_file.write_text(json.dumps(phonebook))
 #end def
 
@@ -54,11 +55,7 @@ def show_all():
 
 
 def is_phone_entered(phone):
-    if len(phone) == 0:
-        print("Phone number empty, try again")
-        return False
-    return True
-    # end if
+    return len(phone) == 0
 # end def
 
 
@@ -86,6 +83,9 @@ def run_bot():
             name, *phone = data
             if is_phone_entered(phone):
                 print(add_contact(name, phone[0]))
+            else:
+                print("Phone number empty, try again")
+            # end if
         elif command in ["edit", "change", "modify"]:
             if len(data) == 0:
                 print("No data entered")
@@ -95,6 +95,8 @@ def run_bot():
             name, *phone = data
             if is_phone_entered(phone):
                 print(change_contact(name, phone[0]))
+            else:
+                print("Phone number empty, try again")
             # end if
         elif command in ["phone", "show"]:
             if len(data):
